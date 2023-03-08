@@ -32,6 +32,7 @@
         height: 100%;
         padding: 0;
         margin: 0;
+        z-index: 1;
       }
     </style>
     <title>Mapa de Mantenimiento - Tecnoforestal</title>
@@ -131,8 +132,10 @@
       var bounds_group = new L.featureGroup([]);
       function setBounds() {}
 
+      /* Capa ESRI */
+
       map.createPane("pane_ESRISatelliteArcGISWorld_Imagery_0");
-      map.getPane("pane_ESRISatelliteArcGISWorld_Imagery_0").style.zIndex = 400;
+      map.getPane("pane_ESRISatelliteArcGISWorld_Imagery_0").style.zIndex = 0;
       var layer_ESRISatelliteArcGISWorld_Imagery_0 = L.tileLayer(
         "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
         {
@@ -148,42 +151,8 @@
       layer_ESRISatelliteArcGISWorld_Imagery_0;
       map.addLayer(layer_ESRISatelliteArcGISWorld_Imagery_0);
 
-      function style_Survey_1_0() {
-        return {
-          pane: "pane_Survey_1",
-          radius: 6.0,
-          opacity: 1,
-          color: "rgba(232,232,232,1.0)",
-          dashArray: "",
-          lineCap: "butt",
-          lineJoin: "miter",
-          weight: 2.0,
-          fill: true,
-          fillOpacity: 1,
-          fillColor: "rgba(215,48,39,1.0)",
-          interactive: true,
-        };
-      }
-      map.createPane("pane_Survey_1");
-      map.getPane("pane_Survey_1").style.zIndex = 401;
-      map.getPane("pane_Survey_1").style["mix-blend-mode"] = "normal";
-      var layer_Survey_1 = new L.geoJson(json_Survey_1, {
-        attribution: "",
-        interactive: true,
-        dataVar: "json_Survey_1",
-        layerName: "layer_Survey_1",
-        pane: "pane_Survey_1",
-        onEachFeature: pop_Survey_1,
-        pointToLayer: function (feature, latlng) {
-          var context = {
-            feature: feature,
-            variables: {},
-          };
-          return L.circleMarker(latlng, style_Survey_1_0(feature));
-        },
-      });
-      bounds_group.addLayer(layer_Survey_1);
-      map.addLayer(layer_Survey_1);
+      /*PARCELAS*/
+
       function pop_PARACEL_Tecnoforestal_20202022_2(feature, layer) {
         var popupContent =
           '<table>\
@@ -250,7 +219,6 @@
                 </table>";
         layer.bindPopup(popupContent, { maxHeight: 400 });
       }
-
       function style_PARACEL_Tecnoforestal_20202022_2_0(feature) {
         switch (String(feature.properties["ESTADO"])) {
           case "Alto grado de enmalezamiento":
