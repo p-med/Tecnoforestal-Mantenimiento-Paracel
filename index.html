@@ -37,6 +37,8 @@
     <title>Mapa de Mantenimiento - Tecnoforestal</title>
   </head>
   <body>
+    <!-- GRAFICO CHART JS -->
+
     <div class="grafico">
       <div id="chartwrapper">
         <canvas id="myChart"></canvas>
@@ -106,6 +108,9 @@
         });
       </script>
     </div>
+
+    <!-- LEAFLET JS -->
+
     <div id="map"></div>
     <script>
       var map = L.map("map", {
@@ -125,51 +130,23 @@
       });
       var bounds_group = new L.featureGroup([]);
       function setBounds() {}
-      map.createPane("pane_Paracel3_0");
-      map.getPane("pane_Paracel3_0").style.zIndex = 400;
-      var img_Paracel3_0 = "data/Paracel3_0.png";
-      var img_bounds_Paracel3_0 = [
-        [-22.923081553380204, -57.032972307520005],
-        [-22.66385872401761, -56.72226521523475],
-      ];
-      var layer_Paracel3_0 = new L.imageOverlay(
-        img_Paracel3_0,
-        img_bounds_Paracel3_0,
-        { pane: "pane_Paracel3_0" }
+
+      map.createPane("pane_ESRISatelliteArcGISWorld_Imagery_0");
+      map.getPane("pane_ESRISatelliteArcGISWorld_Imagery_0").style.zIndex = 400;
+      var layer_ESRISatelliteArcGISWorld_Imagery_0 = L.tileLayer(
+        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        {
+          pane: "pane_ESRISatelliteArcGISWorld_Imagery_0",
+          opacity: 1.0,
+          attribution: "",
+          minZoom: 1,
+          maxZoom: 28,
+          minNativeZoom: 0,
+          maxNativeZoom: 19,
+        }
       );
-      bounds_group.addLayer(layer_Paracel3_0);
-      map.addLayer(layer_Paracel3_0);
-      function pop_Survey_1(feature, layer) {
-        var popupContent =
-          '<table>\
-                    <tr>\
-                        <td colspan="2">' +
-          (feature.properties["date"] !== null
-            ? autolinker.link(feature.properties["date"].toLocaleString())
-            : "") +
-          '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' +
-          (feature.properties["notes"] !== null
-            ? autolinker.link(feature.properties["notes"].toLocaleString())
-            : "") +
-          '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' +
-          (feature.properties["photo"] !== null
-            ? '<img src="images/' +
-              String(feature.properties["photo"])
-                .replace(/[\\\/:]/g, "_")
-                .trim() +
-              '">'
-            : "") +
-          "</td>\
-                    </tr>\
-                </table>";
-        layer.bindPopup(popupContent, { maxHeight: 400 });
-      }
+      layer_ESRISatelliteArcGISWorld_Imagery_0;
+      map.addLayer(layer_ESRISatelliteArcGISWorld_Imagery_0);
 
       function style_Survey_1_0() {
         return {
