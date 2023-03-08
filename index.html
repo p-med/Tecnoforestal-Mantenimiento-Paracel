@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width"
+    />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link rel="stylesheet" href="css/leaflet.css" />
+    <link rel="stylesheet" href="css/syles_chartjs.css" />
+    <link rel="stylesheet" href="css/qgis2web.css" />
+    <link rel="stylesheet" href="css/fontawesome-all.min.css" />
+    <script src="js/qgis2web_expressions.js"></script>
+    <script src="js/leaflet.js"></script>
+    <script src="js/leaflet.rotatedMarker.js"></script>
+    <script src="js/leaflet.pattern.js"></script>
+    <script src="js/leaflet-hash.js"></script>
+    <script src="js/Autolinker.min.js"></script>
+    <script src="js/rbush.min.js"></script>
+    <script src="js/labelgun.min.js"></script>
+    <script src="js/labels.js"></script>
+    <script src="data/Survey_1.js"></script>
+    <script src="data/PARACEL_Tecnoforestal_20202022_2.js"></script>
+    <style>
+      html,
+      body,
+      #map {
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        margin: 0;
+      }
+    </style>
+    <title>Mapa de Mantenimiento - Tecnoforestal</title>
+  </head>
+  <body>
+    <div class="grafico">
+      <div id="chartwrapper">
+        <canvas id="myChart"></canvas>
+      </div>
+
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+      <script>
+        const ctx = document.getElementById("myChart");
+        let labels0 = [
+          "Alto grado de enmalezamiento",
+          "Enmalezamiento medio",
+          "No requieren intervencion",
+        ];
+        let data = [1539.97, 1220.04, 2695.46];
+        let colors = ["#d7191c", "#fec980", "#c7e8ad"];
+
+        new Chart(ctx, {
+          type: "doughnut",
+          data: {
+            labels: labels0,
+            datasets: [
+              {
+                backgroundColor: colors,
+                label: "hectáreas",
+                data: data,
+              },
+            ],
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+                grid: {
+                  display: false,
+                },
+                ticks: {
+                  display: false,
+                },
+                lines: {
+                  display: false,
+                },
+                display: false,
+              },
+            },
+            layout: {
+              padding: 10,
+            },
+            plugins: {
+              legend: {
+                display: true,
+                position: "right",
+                labels: {
+                  font: {
+                    size: 10,
+                  },
+                },
+              },
+              title: {
+                display: true,
+                text: "% Superficie ocupada según estado de enmalezamiento",
+                position: "top",
+              },
+            },
+            responsive: true,
+          },
+        });
+      </script>
+    </div>
+    <div id="map"></div>
+    <script>
+      var map = L.map("map", {
+        zoomControl: true,
+        maxZoom: 28,
+        minZoom: 1,
+      }).fitBounds([
+        [-22.767322842485683, -56.885065517845824],
+        [-22.711910569061725, -56.77621880803874],
+      ]);
+      var hash = new L.Hash(map);
+      map.attributionControl.setPrefix(
+        '<a href="https://fieldata.net" target="_blank">Fieldata E.A.S.</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>'
+      );
+      var autolinker = new Autolinker({
+        truncate: { length: 30, location: "smart" },
+      });
+      var bounds_group = new L.featureGroup([]);
+      function setBounds() {}
+      map.createPane("pane_Paracel3_0");
+      map.getPane("pane_Paracel3_0").style.zIndex = 400;
+      var img_Paracel3_0 = "data/Paracel3_0.png";
+      var img_bounds_Paracel3_0 = [
+        [-22.923081553380204, -57.032972307520005],
+        [-22.66385872401761, -56.72226521523475],
+      ];
+      var layer_Paracel3_0 = new L.imageOverlay(
+        img_Paracel3_0,
+        img_bounds_Paracel3_0,
+        { pane: "pane_Paracel3_0" }
+      );
+      bounds_group.addLayer(layer_Paracel3_0);
+      map.addLayer(layer_Paracel3_0);
+      function pop_Survey_1(feature, layer) {
+        var popupContent =
+          '<table>\
+                    <tr>\
+                        <td colspan="2">' +
+          (feature.properties["date"] !== null
+            ? autolinker.link(feature.properties["date"].toLocaleString())
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' +
+          (feature.properties["notes"] !== null
+            ? autolinker.link(feature.properties["notes"].toLocaleString())
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' +
+          (feature.properties["photo"] !== null
+            ? '<img src="images/' +
+              String(feature.properties["photo"])
+                .replace(/[\\\/:]/g, "_")
+                .trim() +
+              '">'
+            : "") +
+          "</td>\
+                    </tr>\
+                </table>";
+        layer.bindPopup(popupContent, { maxHeight: 400 });
+      }
+
+      function style_Survey_1_0() {
+        return {
+          pane: "pane_Survey_1",
+          radius: 6.0,
+          opacity: 1,
+          color: "rgba(232,232,232,1.0)",
+          dashArray: "",
+          lineCap: "butt",
+          lineJoin: "miter",
+          weight: 2.0,
+          fill: true,
+          fillOpacity: 1,
+          fillColor: "rgba(215,48,39,1.0)",
+          interactive: true,
+        };
+      }
+      map.createPane("pane_Survey_1");
+      map.getPane("pane_Survey_1").style.zIndex = 401;
+      map.getPane("pane_Survey_1").style["mix-blend-mode"] = "normal";
+      var layer_Survey_1 = new L.geoJson(json_Survey_1, {
+        attribution: "",
+        interactive: true,
+        dataVar: "json_Survey_1",
+        layerName: "layer_Survey_1",
+        pane: "pane_Survey_1",
+        onEachFeature: pop_Survey_1,
+        pointToLayer: function (feature, latlng) {
+          var context = {
+            feature: feature,
+            variables: {},
+          };
+          return L.circleMarker(latlng, style_Survey_1_0(feature));
+        },
+      });
+      bounds_group.addLayer(layer_Survey_1);
+      map.addLayer(layer_Survey_1);
+      function pop_PARACEL_Tecnoforestal_20202022_2(feature, layer) {
+        var popupContent =
+          '<table>\
+                    <tr>\
+                        <th scope="row">Parcela</th>\
+                        <td colspan="2">' +
+          (feature.properties["parcela"] !== null
+            ? autolinker.link(feature.properties["parcela"].toLocaleString())
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                      <th scope="row">Estancia</th>\
+                        <td colspan="2">' +
+          (feature.properties["estancia"] !== null
+            ? autolinker.link(feature.properties["estancia"].toLocaleString())
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                      <th scope="row">Superficie (ha)</th>\
+                        <td colspan="2">' +
+          (feature.properties["área_gis"] !== null
+            ? autolinker.link(feature.properties["área_gis"].toLocaleString())
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                      <th scope="row">Contrato</th>\
+                        <td colspan="2">' +
+          (feature.properties["contrato"] !== null
+            ? autolinker.link(feature.properties["contrato"].toLocaleString())
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                      <th scope="row">Estado</th>\
+                        <td colspan="2">' +
+          (feature.properties["ESTADO"] !== null
+            ? autolinker.link(feature.properties["ESTADO"].toLocaleString())
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                      <th scope="row">Trabajo asignado</th>\
+                        <td colspan="2">' +
+          (feature.properties["TrabajoAsignado"] !== null
+            ? autolinker.link(
+                feature.properties["TrabajoAsignado"].toLocaleString()
+              )
+            : "") +
+          '</td>\
+                    </tr>\
+                    <tr>\
+                      <th scope="row">Observaciones</th>\
+                        <td colspan="2">' +
+          (feature.properties["Observacion"] !== null
+            ? autolinker.link(
+                feature.properties["Observacion"].toLocaleString()
+              )
+            : "") +
+          "</td>\
+                    </tr>\
+                </table>";
+        layer.bindPopup(popupContent, { maxHeight: 400 });
+      }
+
+      function style_PARACEL_Tecnoforestal_20202022_2_0(feature) {
+        switch (String(feature.properties["ESTADO"])) {
+          case "Alto grado de enmalezamiento":
+            return {
+              pane: "pane_PARACEL_Tecnoforestal_20202022_2",
+              opacity: 1,
+              color: "rgba(35,35,35,1.0)",
+              dashArray: "",
+              lineCap: "butt",
+              lineJoin: "miter",
+              weight: 1.0,
+              fill: true,
+              fillOpacity: 1,
+              fillColor: "rgba(215,25,28,1.0)",
+              interactive: true,
+            };
+            break;
+          case "Enmalezamiento medio":
+            return {
+              pane: "pane_PARACEL_Tecnoforestal_20202022_2",
+              opacity: 1,
+              color: "rgba(35,35,35,1.0)",
+              dashArray: "",
+              lineCap: "butt",
+              lineJoin: "miter",
+              weight: 1.0,
+              fill: true,
+              fillOpacity: 1,
+              fillColor: "rgba(254,201,128,1.0)",
+              interactive: true,
+            };
+            break;
+          case "No requieren intervencion":
+            return {
+              pane: "pane_PARACEL_Tecnoforestal_20202022_2",
+              opacity: 1,
+              color: "rgba(35,35,35,1.0)",
+              dashArray: "",
+              lineCap: "butt",
+              lineJoin: "miter",
+              weight: 1.0,
+              fill: true,
+              fillOpacity: 1,
+              fillColor: "rgba(199,232,173,1.0)",
+              interactive: true,
+            };
+            break;
+          default:
+            return {
+              pane: "pane_PARACEL_Tecnoforestal_20202022_2",
+              opacity: 1,
+              color: "rgba(35,35,35,1.0)",
+              dashArray: "",
+              lineCap: "butt",
+              lineJoin: "miter",
+              weight: 1.0,
+              fill: true,
+              fillOpacity: 1,
+              fillColor: "rgba(43,131,186,1.0)",
+              interactive: true,
+            };
+            break;
+        }
+      }
+      map.createPane("pane_PARACEL_Tecnoforestal_20202022_2");
+      map.getPane("pane_PARACEL_Tecnoforestal_20202022_2").style.zIndex = 402;
+      map.getPane("pane_PARACEL_Tecnoforestal_20202022_2").style[
+        "mix-blend-mode"
+      ] = "normal";
+      var layer_PARACEL_Tecnoforestal_20202022_2 = new L.geoJson(
+        json_PARACEL_Tecnoforestal_20202022_2,
+        {
+          attribution: "",
+          interactive: true,
+          dataVar: "json_PARACEL_Tecnoforestal_20202022_2",
+          layerName: "layer_PARACEL_Tecnoforestal_20202022_2",
+          pane: "pane_PARACEL_Tecnoforestal_20202022_2",
+          onEachFeature: pop_PARACEL_Tecnoforestal_20202022_2,
+          style: style_PARACEL_Tecnoforestal_20202022_2_0,
+        }
+      );
+      bounds_group.addLayer(layer_PARACEL_Tecnoforestal_20202022_2);
+      map.addLayer(layer_PARACEL_Tecnoforestal_20202022_2);
+      setBounds();
+      L.ImageOverlay.include({
+        getBounds: function () {
+          return this._bounds;
+        },
+      });
+    </script>
+  </body>
+</html>
